@@ -2,7 +2,7 @@ import google.generativeai as genai
 import os
 
 # Configure Gemini API Key
-api_key = 'AIzaSyAeF42pixwTRf4Ssdum9YbuLUe3J3GBr6U'
+api_key = 'your_api_key_here'
 if not api_key:
     print("No API key found")
 else:
