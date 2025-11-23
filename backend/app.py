@@ -9,6 +9,11 @@ from typing import Dict, List, Any
 import re
 from flask import send_from_directory
 
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
 
@@ -18,7 +23,7 @@ def serve_frontend():
     return send_from_directory(app.static_folder, 'index.html')
 
 # Configure Gemini API
-GEMINI_API_KEY = 'your_gemini_api_key_here'
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
 model = None
 
 if GEMINI_API_KEY and GEMINI_API_KEY != 'your_gemini_api_key_here':

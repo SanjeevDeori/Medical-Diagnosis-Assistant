@@ -259,83 +259,56 @@ function displayResults(result) {
 
     let html = '<div class="diagnosis-result">';
 
-    // Confidence Score
-    html += `
-        <div class="confidence-score">
-            <div style="flex: 1;">
-                <strong>${t.confidence}</strong>
-                <div class="confidence-bar">
-                    <div class="confidence-fill" style="width: ${(diagnosis.confidence_score * 100).toFixed(0)}%"></div>
-                </div>
-            </div>
-            <span style="font-weight: 600; font-size: 1.2rem;">${(diagnosis.confidence_score * 100).toFixed(0)}%</span>
-        </div>
-    `;
-
-    // Primary Diagnosis
+    // Primary Diagnosis Card
     html += `
         <div class="diagnosis-card">
-            <h4>🎯 ${t.diagnosis}</h4>
-            <p style="font-size: 1.2rem; font-weight: 600; color: var(--primary-light);">
+            <div class="section-title">Primary Diagnosis</div>
+            <div class="primary-diagnosis">
                 ${diagnosis.primary_diagnosis}
-            </p>
+            </div>
+            
+            <div class="confidence-section">
+                <div class="confidence-label">${t.confidence}</div>
+                <div class="confidence-bar-bg">
+                    <div class="confidence-fill" style="width: ${(diagnosis.confidence_score * 100).toFixed(0)}%"></div>
+                </div>
+                <div style="font-weight: 700; color: var(--primary-dark);">${(diagnosis.confidence_score * 100).toFixed(0)}%</div>
+            </div>
+
+            ${diagnosis.referral_needed ? `
+                <div class="alert-box alert-danger">
+                    <span style="font-size: 1.2rem;">⚠️</span>
+                    <div>
+                        <strong>${t.referral}</strong>
+                        <p>Recommended Specialty: ${diagnosis.referral_specialty || 'General Physician'}</p>
+                    </div>
+                </div>
+            ` : ''}
+
+            ${diagnosis.red_flags && diagnosis.red_flags.length > 0 ? `
+                <div class="alert-box alert-warning">
+                    <span style="font-size: 1.2rem;">🚨</span>
+                    <div>
+                        <strong>${t.redFlags}</strong>
+                        <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
+                            ${diagnosis.red_flags.map(flag => `<li>${flag}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            ` : ''}
         </div>
     `;
-
-    // Referral Badge
-    if (diagnosis.referral_needed) {
-        html += `
-            <div class="alert alert-danger">
-                <span class="alert-icon">⚠️</span>
-                <div>
-                    <strong>${t.referral}</strong>
-                    <p>Specialty: ${diagnosis.referral_specialty || 'General Physician'}</p>
-                </div>
-            </div>
-        `;
-    }
-
-    // Red Flags
-    if (diagnosis.red_flags && diagnosis.red_flags.length > 0) {
-        html += `
-            <div class="alert alert-warning">
-                <span class="alert-icon">🚨</span>
-                <div>
-                    <strong>${t.redFlags}</strong>
-                    <ul style="margin: 0.5rem 0 0 1.5rem;">
-                        ${diagnosis.red_flags.map(flag => `<li>${flag}</li>`).join('')}
-                    </ul>
-                </div>
-            </div>
-        `;
-    }
 
     // Immediate Actions
     if (diagnosis.immediate_actions && diagnosis.immediate_actions.length > 0) {
         html += `
             <div class="diagnosis-card">
                 <h4>⚡ ${t.immediateActions}</h4>
-                <ul class="differential-list">
+                <ul class="action-list">
                     ${diagnosis.immediate_actions.map(action => `
-                        <li class="differential-item">${action}</li>
-                    `).join('')}
-                </ul>
-            </div>
-        `;
-    }
-
-    // Differential Diagnoses
-    if (diagnosis.differential_diagnoses && diagnosis.differential_diagnoses.length > 0) {
-        html += `
-            <div class="diagnosis-card">
-                <h4>🔍 ${t.differentialDiagnoses}</h4>
-                <ul class="differential-list">
-                    ${diagnosis.differential_diagnoses.map(diff => `
-                        <li class="differential-item">
-                            <strong>${diff.condition}</strong> 
-                            (${(diff.probability * 100).toFixed(0)}%)
-                            <br>
-                            <small style="color: var(--text-muted);">${diff.reasoning}</small>
+                        <li class="action-item">
+                            <span class="action-icon">✓</span>
+                            <span>${action}</span>
                         </li>
                     `).join('')}
                 </ul>
@@ -345,47 +318,39 @@ function displayResults(result) {
 
     // Treatment Protocol
     if (diagnosis.treatment_protocol) {
-        html += `<div class="diagnosis-card treatment-section">`;
+        html += `<div class="diagnosis-card">`;
         html += `<h4>💊 ${t.treatment}</h4>`;
 
         // Medications
         if (diagnosis.treatment_protocol.medications && diagnosis.treatment_protocol.medications.length > 0) {
             html += `
-                <div style="margin-bottom: 1rem;">
-                    <strong>${t.medications}:</strong>
-                    <ul class="medication-list">
+                <div style="margin-top: 1rem;">
+                    <div class="section-title">${t.medications}</div>
+                    <div class="medication-list">
                         ${diagnosis.treatment_protocol.medications.map(med => `
-                            <li class="medication-item">
-                                <div>
-                                    <div class="medication-name">${med.name}</div>
-                                    <div class="medication-dosage">
-                                        ${med.dosage} - ${med.frequency} for ${med.duration}
-                                    </div>
-                                </div>
-                            </li>
+                            <div class="medication-item">
+                                <span class="med-name">${med.name}</span>
+                                <span class="med-details">${med.dosage} • ${med.frequency} • ${med.duration}</span>
+                            </div>
                         `).join('')}
-                    </ul>
+                    </div>
                 </div>
             `;
         }
 
-        // Dosage Recommendations
+        // Dosage Recommendations (if available)
         if (dosage_recommendations && dosage_recommendations.length > 0) {
             html += `
-                <div style="margin-bottom: 1rem;">
-                    <strong>Age-Adjusted Dosages:</strong>
-                    <ul class="medication-list">
+                <div style="margin-top: 1rem;">
+                    <div class="section-title">Pediatric/Geriatric Adjustments</div>
+                    <div class="medication-list">
                         ${dosage_recommendations.map(rec => `
-                            <li class="medication-item">
-                                <div>
-                                    <div class="medication-name">${rec.medication}</div>
-                                    <div class="medication-dosage">
-                                        ${rec.recommended_dosage} (${rec.age_category})
-                                    </div>
-                                </div>
-                            </li>
+                            <div class="medication-item" style="border-left-color: var(--primary);">
+                                <span class="med-name">${rec.medication}</span>
+                                <span class="med-details">Rec: ${rec.recommended_dosage} (${rec.age_category})</span>
+                            </div>
                         `).join('')}
-                    </ul>
+                    </div>
                 </div>
             `;
         }
@@ -393,21 +358,16 @@ function displayResults(result) {
         // Lifestyle Advice
         if (diagnosis.treatment_protocol.lifestyle_advice && diagnosis.treatment_protocol.lifestyle_advice.length > 0) {
             html += `
-                <div style="margin-bottom: 1rem;">
-                    <strong>${t.lifestyle}:</strong>
-                    <ul style="margin: 0.5rem 0 0 1.5rem; color: var(--text-secondary);">
-                        ${diagnosis.treatment_protocol.lifestyle_advice.map(advice => `<li>${advice}</li>`).join('')}
+                <div style="margin-top: 1.5rem;">
+                    <div class="section-title">${t.lifestyle}</div>
+                    <ul class="action-list">
+                        ${diagnosis.treatment_protocol.lifestyle_advice.map(advice => `
+                            <li class="action-item">
+                                <span class="action-icon" style="color: var(--primary);">•</span>
+                                <span>${advice}</span>
+                            </li>
+                        `).join('')}
                     </ul>
-                </div>
-            `;
-        }
-
-        // Follow-up
-        if (diagnosis.treatment_protocol.follow_up) {
-            html += `
-                <div>
-                    <strong>${t.followUp}:</strong> 
-                    <span style="color: var(--accent-color);">${diagnosis.treatment_protocol.follow_up}</span>
                 </div>
             `;
         }
@@ -415,32 +375,21 @@ function displayResults(result) {
         html += `</div>`;
     }
 
-    // Drug Interactions
-    if (drug_interactions && drug_interactions.length > 0) {
+    // Differential Diagnoses
+    if (diagnosis.differential_diagnoses && diagnosis.differential_diagnoses.length > 0) {
         html += `
-            <div class="alert alert-warning">
-                <span class="alert-icon">⚠️</span>
-                <div>
-                    <strong>${t.drugInteractions}</strong>
-                    <ul style="margin: 0.5rem 0 0 1.5rem;">
-                        ${drug_interactions.map(interaction => `
-                            <li>
-                                <strong>${interaction.drugs.join(' + ')}</strong>
-                                <br>
-                                <small>Severity: ${interaction.severity.toUpperCase()}</small>
-                                <br>
-                                <small>${interaction.description}</small>
-                            </li>
-                        `).join('')}
-                    </ul>
+            <div class="diagnosis-card">
+                <h4>🔍 ${t.differentialDiagnoses}</h4>
+                <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                    ${diagnosis.differential_diagnoses.map(diff => `
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; background: var(--bg-body); border-radius: var(--radius-sm);">
+                            <span style="font-weight: 500;">${diff.condition}</span>
+                            <span style="font-size: 0.85rem; background: white; padding: 0.2rem 0.5rem; border-radius: 99px; border: 1px solid var(--border-light);">
+                                ${(diff.probability * 100).toFixed(0)}% Match
+                            </span>
+                        </div>
+                    `).join('')}
                 </div>
-            </div>
-        `;
-    } else {
-        html += `
-            <div class="alert alert-success">
-                <span class="alert-icon">✅</span>
-                <div><strong>${t.noDrugInteractions}</strong></div>
             </div>
         `;
     }
@@ -448,18 +397,30 @@ function displayResults(result) {
     // Patient Explanation
     if (diagnosis.patient_explanation) {
         html += `
-            <div class="diagnosis-card">
-                <h4>👨‍⚕️ ${t.patientExplanation}</h4>
-                <p style="line-height: 1.8; color: var(--text-secondary);">
-                    ${diagnosis.patient_explanation}
+            <div class="diagnosis-card" style="background: var(--primary-soft); border-color: var(--primary-light);">
+                <h4>🗣️ ${t.patientExplanation}</h4>
+                <p style="margin-top: 0.5rem; color: var(--text-body); font-style: italic;">
+                    "${diagnosis.patient_explanation}"
                 </p>
             </div>
         `;
     }
 
+    // Print Button
+    html += `
+        <button onclick="window.print()" class="btn" style="background: white; border: 1px solid var(--border-light); color: var(--text-body); margin-top: 1rem;">
+            🖨️ Print Diagnosis Report
+        </button>
+    `;
+
     html += '</div>';
 
     resultsContent.innerHTML = html;
+
+    // Scroll to results on mobile
+    if (window.innerWidth < 900) {
+        resultsContent.scrollIntoView({ behavior: 'smooth' });
+    }
 }
 
 // Display error

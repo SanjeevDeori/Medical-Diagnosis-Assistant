@@ -4,14 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medical Diagnosis Assistant - Rural Healthcare India</title>
-    <meta name="description"
-        content="AI-powered medical diagnosis assistant for rural healthcare centers in India. Multilingual support for Hindi, Tamil, Telugu, and Bengali.">
+    <title>MedAssist AI - Rural Healthcare Diagnosis</title>
+    <meta name="description" content="AI-powered medical diagnosis assistant for rural healthcare centers in India.">
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;600;700&display=swap"
         rel="stylesheet">
 </head>
 
@@ -20,7 +19,7 @@
     <header class="header">
         <div class="container">
             <div class="header-content">
-                <div class="logo">
+                <a href="#" class="logo">
                     <svg class="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round" />
@@ -30,9 +29,9 @@
                             stroke-linejoin="round" />
                     </svg>
                     <h1>MedAssist AI</h1>
-                </div>
+                </a>
                 <div class="language-selector">
-                    <select id="languageSelect" class="language-dropdown">
+                    <select id="languageSelect">
                         <option value="en">English</option>
                         <option value="hi">हिंदी (Hindi)</option>
                         <option value="ta">தமிழ் (Tamil)</option>
@@ -49,14 +48,11 @@
         <div class="container">
             <!-- Hero Section -->
             <section class="hero">
-                <div class="hero-content">
-                    <h2 class="hero-title">AI-Powered Medical Diagnosis</h2>
-                    <p class="hero-subtitle">Supporting rural healthcare workers across India with intelligent diagnosis
-                        assistance</p>
-                    <div class="status-indicator">
-                        <span class="status-dot" id="statusDot"></span>
-                        <span id="statusText">Checking connection...</span>
-                    </div>
+                <h2 class="hero-title">Intelligent Rural Healthcare</h2>
+                <p class="hero-subtitle">AI-powered diagnosis assistance tailored for India's rural medical centers.</p>
+                <div class="status-indicator">
+                    <span class="status-dot" id="statusDot"></span>
+                    <span id="statusText">System Online</span>
                 </div>
             </section>
 
@@ -65,31 +61,36 @@
                 <!-- Left Panel - Patient Information -->
                 <div class="panel patient-panel">
                     <div class="panel-header">
-                        <h3>Patient Information</h3>
-                        <span class="panel-icon">👤</span>
+                        <h3>Patient Details</h3>
+                        <div class="panel-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                        </div>
                     </div>
                     <div class="panel-content">
                         <form id="patientForm">
                             <div class="form-group">
                                 <label for="patientId">Patient ID</label>
-                                <input type="text" id="patientId"
-                                    placeholder="Enter Patient ID (or leave blank to auto-generate)">
+                                <input type="text" id="patientId" placeholder="Auto-generated or enter ID">
                             </div>
 
                             <div class="form-group">
-                                <label for="patientName">Patient Name</label>
-                                <input type="text" id="patientName" placeholder="Enter patient name" required>
+                                <label for="patientName">Full Name</label>
+                                <input type="text" id="patientName" placeholder="Patient's name" required>
                             </div>
 
                             <div class="form-row">
                                 <div class="form-group">
                                     <label for="age">Age</label>
-                                    <input type="number" id="age" placeholder="Age" min="0" max="120" required>
+                                    <input type="number" id="age" placeholder="Yrs" min="0" max="120" required>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="weight">Weight (kg)</label>
-                                    <input type="number" id="weight" placeholder="Weight" min="1" max="300" step="0.1">
+                                    <label for="weight">Weight</label>
+                                    <input type="number" id="weight" placeholder="Kg" min="1" max="300" step="0.1">
                                 </div>
                             </div>
 
@@ -104,8 +105,8 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="contact">Contact Number</label>
-                                <input type="tel" id="contact" placeholder="Phone number">
+                                <label for="contact">Mobile Number</label>
+                                <input type="tel" id="contact" placeholder="10-digit number">
                             </div>
                         </form>
                     </div>
@@ -114,63 +115,68 @@
                 <!-- Center Panel - Symptoms & Vitals -->
                 <div class="panel symptoms-panel">
                     <div class="panel-header">
-                        <h3>Symptoms & Vital Signs</h3>
-                        <span class="panel-icon">🩺</span>
+                        <h3>Clinical Assessment</h3>
+                        <div class="panel-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                            </svg>
+                        </div>
                     </div>
                     <div class="panel-content">
                         <form id="symptomsForm">
                             <div class="form-group">
-                                <label>Current Symptoms</label>
-                                <div id="selectedSymptoms" class="selected-symptoms-container">
-                                    <!-- Selected symptoms will appear here -->
-                                </div>
+                                <label>Reported Symptoms</label>
+                                <div id="selectedSymptoms" class="selected-symptoms-container"></div>
 
-                                <label>Common Symptoms</label>
-                                <div id="commonSymptoms" class="common-symptoms-container">
-                                    <!-- Common symptom chips will be injected here -->
-                                </div>
+                                <label style="margin-top: 0.5rem; font-size: 0.85rem;">Common Symptoms (Click to
+                                    add)</label>
+                                <div id="commonSymptoms" class="common-symptoms-container"></div>
                             </div>
 
                             <div class="form-group">
-                                <label for="symptoms">Detailed Description / Other Symptoms</label>
+                                <label for="symptoms">Detailed Description</label>
                                 <textarea id="symptoms" rows="3"
-                                    placeholder="Describe other symptoms or provide more details..."
+                                    placeholder="Describe symptoms, duration, and severity in detail..."
                                     required></textarea>
-                                <small class="form-hint">You can type in any language</small>
+                                <small class="form-hint">Supports English and Indian languages</small>
                             </div>
 
                             <div class="vitals-grid">
-                                <div class="form-group">
-                                    <label for="temperature">Temperature (°F)</label>
-                                    <input type="number" id="temperature" placeholder="98.6" step="0.1" min="90"
-                                        max="110">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="temperature">Temp (°F)</label>
+                                    <input type="number" id="temperature" placeholder="98.6" step="0.1">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="bloodPressure">Blood Pressure</label>
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="bloodPressure">BP (mmHg)</label>
                                     <input type="text" id="bloodPressure" placeholder="120/80">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="heartRate">Heart Rate (bpm)</label>
-                                    <input type="number" id="heartRate" placeholder="72" min="30" max="200">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="heartRate">Pulse (bpm)</label>
+                                    <input type="number" id="heartRate" placeholder="72">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="oxygenLevel">Oxygen Level (%)</label>
-                                    <input type="number" id="oxygenLevel" placeholder="98" min="70" max="100">
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <label for="oxygenLevel">SpO2 (%)</label>
+                                    <input type="number" id="oxygenLevel" placeholder="98">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="medicalHistory">Medical History</label>
-                                <textarea id="medicalHistory" rows="3"
-                                    placeholder="Previous conditions, allergies, current medications..."></textarea>
+                                <textarea id="medicalHistory" rows="2"
+                                    placeholder="Chronic conditions, allergies, past surgeries..."></textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary" id="diagnoseBtn">
-                                <span class="btn-icon">🔍</span>
-                                <span>Analyze & Diagnose</span>
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <span>Run Diagnosis</span>
                             </button>
                         </form>
                     </div>
@@ -179,51 +185,44 @@
                 <!-- Right Panel - Results -->
                 <div class="panel results-panel">
                     <div class="panel-header">
-                        <h3>Diagnosis Results</h3>
-                        <span class="panel-icon">📋</span>
+                        <h3>Diagnosis Report</h3>
+                        <div class="panel-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                        </div>
                     </div>
                     <div class="panel-content" id="resultsContent">
                         <div class="empty-state">
-                            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-                                <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2"
-                                    stroke-linecap="round" />
+                            <svg class="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5">
+                                <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                             </svg>
-                            <p>Enter patient information and symptoms to get AI-powered diagnosis</p>
+                            <p>Enter patient data to generate AI diagnosis</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Patient History Section -->
-            <section class="history-section" id="historySection" style="display: none;">
-                <div class="panel">
-                    <div class="panel-header">
-                        <h3>Patient History</h3>
-                        <span class="panel-icon">📚</span>
-                    </div>
-                    <div class="panel-content" id="historyContent">
-                        <!-- History will be populated here -->
-                    </div>
-                </div>
-            </section>
         </div>
     </main>
 
     <!-- Loading Overlay -->
     <div class="loading-overlay" id="loadingOverlay">
-        <div class="loading-spinner">
-            <div class="spinner"></div>
-            <p>Analyzing patient data...</p>
-        </div>
+        <div class="spinner-ring"></div>
+        <p class="loading-text">Analyzing Clinical Data...</p>
     </div>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>⚕️ Medical Diagnosis Assistant for Rural Healthcare India</p>
-            <p class="footer-note">This is an AI-assisted tool. Always consult with qualified medical professionals for
-                final diagnosis and treatment.</p>
+            <p>© 2025 MedAssist AI • Rural Healthcare Initiative</p>
+            <p style="font-size: 0.8rem; margin-top: 0.5rem; opacity: 0.7;">AI-assisted tool. Consult a doctor for final
+                verification.</p>
         </div>
     </footer>
 
