@@ -146,7 +146,13 @@ async function handleDiagnosis(e) {
     e.preventDefault();
 
     // Get form data
-    const patientId = document.getElementById('patientId').value;
+    let patientId = document.getElementById('patientId').value;
+
+    // Auto-generate Patient ID if missing
+    if (!patientId) {
+        patientId = `PID-${Date.now()}`;
+        document.getElementById('patientId').value = patientId;
+    }
     const patientName = document.getElementById('patientName').value;
     const age = parseInt(document.getElementById('age').value);
     const weight = parseFloat(document.getElementById('weight').value) || 60;
