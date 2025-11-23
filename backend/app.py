@@ -102,7 +102,7 @@ def init_db():
     finally:
         conn.close()
 
-# Initialize database on startup
+# Initialize database on startup 
 init_db()
 
 # Multilingual translations
