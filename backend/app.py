@@ -389,11 +389,32 @@ def diagnose():
         return jsonify(response_data)
         
     except Exception as e:
+        print(f"⚠️ AI Model failed: {str(e)}")
+        print("🔄 Switching to offline diagnosis")
+        
+        # Fallback to offline diagnosis
+        diagnosis_result = offline_diagnosis(symptoms, vital_signs, medical_history, language)
+        
+        # Check drug interactions for offline result
+        medications = []
+        if 'treatment_protocol' in diagnosis_result and 'medications' in diagnosis_result['treatment_protocol']:
+            medications = [med['name'] for med in diagnosis_result['treatment_protocol']['medications']]
+        
+        drug_interactions = check_drug_interactions(medications)
+        
+        # Calculate dosages for offline result
+        dosage_recommendations = []
+        for med in medications:
+            dosage_recommendations.append(calculate_dosage(med, age, weight, gender))
+            
         return jsonify({
-            'status': 'error',
-            'message': str(e),
-            'fallback': offline_diagnosis(symptoms, vital_signs, medical_history, language)
-        }), 500
+            'status': 'success',
+            'diagnosis': diagnosis_result,
+            'drug_interactions': drug_interactions,
+            'dosage_recommendations': dosage_recommendations,
+            'translations': TRANSLATIONS.get(language, TRANSLATIONS['en']),
+            'note': 'Offline mode (AI unavailable)'
+        })
 
 def offline_diagnosis(symptoms: str, vital_signs: Dict, medical_history: str, language: str) -> Dict:
     """Offline rule-based diagnosis for low connectivity scenarios"""
