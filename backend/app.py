@@ -41,7 +41,8 @@ else:
     print("   System will operate in OFFLINE MODE (rule-based diagnosis)")
 
 # Database setup
-DB_PATH = '../data/medical_assistant.db'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(BASE_DIR, 'data', 'medical_assistant.db')
 
 def init_db():
     """Initialize SQLite database with required tables"""

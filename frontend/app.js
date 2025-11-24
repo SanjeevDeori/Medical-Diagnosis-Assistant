@@ -181,31 +181,37 @@ async function handleDiagnosis(e) {
     // Show loading
     showLoading(true);
 
+    // Prepare diagnosis data (outside try block so it's accessible in catch)
+    const diagnosisData = {
+        patient_id: patientId,
+        symptoms: symptoms,
+        vital_signs: vitalSigns,
+        medical_history: medicalHistory,
+        language: currentLanguage,
+        age: age,
+        weight: weight,
+        gender: gender
+    };
+
     try {
-        // Register patient if new
+        // Try to register patient if new (non-blocking)
         if (patientId !== currentPatientId) {
-            await registerPatient({
-                patient_id: patientId,
-                name: patientName,
-                age: age,
-                gender: gender,
-                contact: contact
-            });
-            currentPatientId = patientId;
+            try {
+                await registerPatient({
+                    patient_id: patientId,
+                    name: patientName,
+                    age: age,
+                    gender: gender,
+                    contact: contact
+                });
+                currentPatientId = patientId;
+            } catch (regError) {
+                console.warn('Patient registration failed (offline mode):', regError);
+                // Continue with diagnosis even if registration fails
+            }
         }
 
-        // Get diagnosis
-        const diagnosisData = {
-            patient_id: patientId,
-            symptoms: symptoms,
-            vital_signs: vitalSigns,
-            medical_history: medicalHistory,
-            language: currentLanguage,
-            age: age,
-            weight: weight,
-            gender: gender
-        };
-
+        // Get diagnosis from backend
         const response = await fetch(`${API_BASE_URL}/diagnose`, {
             method: 'POST',
             headers: {
@@ -218,14 +224,28 @@ async function handleDiagnosis(e) {
 
         if (result.status === 'success') {
             displayResults(result);
-            loadPatientHistory(patientId);
+            // Try to load history, but don't fail if it doesn't work
+            try {
+                await loadPatientHistory(patientId);
+            } catch (histError) {
+                console.warn('Could not load patient history:', histError);
+            }
         } else {
             throw new Error(result.message || 'Diagnosis failed');
         }
 
     } catch (error) {
         console.error('Diagnosis error:', error);
-        displayError(error.message);
+        // Try offline diagnosis as fallback
+        console.log('🔄 Switching to offline diagnosis mode...');
+        try {
+            const offlineResult = performOfflineDiagnosis(diagnosisData);
+            displayResults(offlineResult);
+            displayOfflineNotice();
+        } catch (offlineError) {
+            console.error('Offline diagnosis also failed:', offlineError);
+            displayError(error.message);
+        }
     } finally {
         showLoading(false);
     }
@@ -545,3 +565,288 @@ function renderSelectedSymptoms() {
 // Expose functions to global scope for onclick handlers
 window.toggleSymptom = toggleSymptom;
 window.removeSymptom = removeSymptom;
+
+// ============ OFFLINE DIAGNOSIS FUNCTIONALITY ============
+
+function performOfflineDiagnosis(diagnosisData) {
+    const { symptoms, vital_signs, medical_history, language, age, weight, gender } = diagnosisData;
+    const symptomsLower = symptoms.toLowerCase();
+
+    // Initialize diagnosis structure
+    let diagnosis = {
+        primary_diagnosis: 'General Malaise - Requires Examination',
+        confidence_score: 0.3,
+        differential_diagnoses: [],
+        immediate_actions: ['Monitor vital signs', 'Ensure patient comfort', 'Maintain hydration'],
+        treatment_protocol: {
+            medications: [],
+            lifestyle_advice: ['Adequate rest', 'Drink plenty of fluids', 'Maintain hygiene'],
+            follow_up: '24-48 hours or if symptoms worsen'
+        },
+        referral_needed: false,
+        referral_specialty: '',
+        red_flags: [],
+        patient_explanation: 'Based on the symptoms, please rest and monitor your condition. Consult a doctor if symptoms persist or worsen.'
+    };
+
+    // Get vital signs with safe defaults
+    const temp = parseFloat(vital_signs.temperature) || 0;
+    const bp = vital_signs.blood_pressure || '';
+    const hr = parseInt(vital_signs.heart_rate) || 0;
+    const o2 = parseInt(vital_signs.oxygen_level) || 0;
+
+    // Check for emergency conditions first
+    if (temp > 104 || (o2 && o2 < 90) || hr > 120) {
+        diagnosis.primary_diagnosis = 'Medical Emergency';
+        diagnosis.confidence_score = 0.9;
+        diagnosis.referral_needed = true;
+        diagnosis.referral_specialty = 'Emergency Medicine';
+        diagnosis.red_flags = ['Critical vital signs', 'Immediate medical attention required'];
+        diagnosis.immediate_actions = ['URGENT: Transfer to hospital immediately', 'Monitor continuously', 'Keep patient stable'];
+        diagnosis.patient_explanation = 'This is a medical emergency. Please seek immediate hospital care.';
+        return formatOfflineResult(diagnosis, language);
+    }
+
+    // Fever-related conditions
+    if (hasFeverSymptoms(symptomsLower)) {
+        if (temp > 103) {
+            diagnosis.primary_diagnosis = 'High Fever - Possible Severe Infection';
+            diagnosis.confidence_score = 0.75;
+            diagnosis.referral_needed = true;
+            diagnosis.referral_specialty = 'General Medicine';
+            diagnosis.red_flags = ['High temperature (>103°F)', 'Risk of complications'];
+            diagnosis.immediate_actions = [
+                'Tepid sponging to reduce fever',
+                'Administer antipyretics',
+                'Monitor temperature every 2 hours',
+                'Ensure adequate hydration'
+            ];
+            diagnosis.treatment_protocol.medications = [
+                { name: 'Paracetamol', dosage: '500-1000mg', frequency: 'Every 6 hours', duration: '3-5 days' },
+                { name: 'ORS', dosage: '200-400ml', frequency: 'After each episode of sweating', duration: 'Until fever subsides' }
+            ];
+
+            // Check for dengue/malaria symptoms
+            if (symptomsLower.includes('joint pain') || symptomsLower.includes('rash') || symptomsLower.includes('bleeding')) {
+                diagnosis.differential_diagnoses.push({
+                    condition: 'Dengue Fever',
+                    probability: 0.6,
+                    reasoning: 'High fever with joint pain/rash suggests dengue'
+                });
+                diagnosis.immediate_actions.push('Blood test for dengue/malaria recommended');
+            }
+
+            if (symptomsLower.includes('chills') || symptomsLower.includes('shivering') || symptomsLower.includes('sweating')) {
+                diagnosis.differential_diagnoses.push({
+                    condition: 'Malaria',
+                    probability: 0.5,
+                    reasoning: 'Fever with chills and sweating pattern'
+                });
+                diagnosis.immediate_actions.push('Blood smear for malaria parasites');
+            }
+        } else if (temp >= 100) {
+            diagnosis.primary_diagnosis = 'Fever - Likely Viral Infection';
+            diagnosis.confidence_score = 0.7;
+            diagnosis.treatment_protocol.medications = [
+                { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 6-8 hours', duration: '3-5 days' }
+            ];
+            diagnosis.differential_diagnoses.push({
+                condition: 'Viral Fever',
+                probability: 0.7,
+                reasoning: 'Moderate fever without severe symptoms'
+            });
+        }
+    }
+
+    // Respiratory symptoms
+    if (hasRespiratorySymptoms(symptomsLower)) {
+        if (symptomsLower.includes('difficulty breathing') || symptomsLower.includes('chest pain') || symptomsLower.includes('shortness of breath')) {
+            diagnosis.primary_diagnosis = 'Lower Respiratory Tract Infection - Possible Pneumonia';
+            diagnosis.confidence_score = 0.7;
+            diagnosis.referral_needed = true;
+            diagnosis.referral_specialty = 'Pulmonology/General Medicine';
+            diagnosis.red_flags = ['Breathing difficulty', 'Possible pneumonia'];
+            diagnosis.treatment_protocol.medications = [
+                { name: 'Amoxicillin', dosage: '500mg', frequency: '3 times daily', duration: '5-7 days' },
+                { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 6 hours for fever', duration: '3-5 days' }
+            ];
+        } else {
+            diagnosis.primary_diagnosis = 'Upper Respiratory Tract Infection (Common Cold)';
+            diagnosis.confidence_score = 0.75;
+            diagnosis.treatment_protocol.medications = [
+                { name: 'Cetirizine', dosage: '10mg', frequency: 'Once daily', duration: '3-5 days' },
+                { name: 'Steam inhalation', dosage: '2-3 times', frequency: 'Daily', duration: '5 days' }
+            ];
+            diagnosis.differential_diagnoses.push({
+                condition: 'Common Cold',
+                probability: 0.8,
+                reasoning: 'Typical cold symptoms without severe features'
+            });
+        }
+    }
+
+    // Gastrointestinal symptoms
+    if (hasGISymptoms(symptomsLower)) {
+        diagnosis.primary_diagnosis = 'Acute Gastroenteritis';
+        diagnosis.confidence_score = 0.75;
+        diagnosis.immediate_actions = [
+            'Start ORS immediately',
+            'Monitor for dehydration signs',
+            'Avoid solid food initially',
+            'Maintain hand hygiene'
+        ];
+        diagnosis.treatment_protocol.medications = [
+            { name: 'ORS (Oral Rehydration Solution)', dosage: '200-400ml', frequency: 'After each loose stool', duration: 'Until diarrhea stops' },
+            { name: 'Zinc supplements', dosage: '20mg', frequency: 'Once daily', duration: '10-14 days' }
+        ];
+        diagnosis.treatment_protocol.lifestyle_advice = [
+            'Drink plenty of fluids (ORS, coconut water, rice water)',
+            'Eat bland foods (rice, banana, toast)',
+            'Avoid dairy, spicy, and oily foods',
+            'Maintain strict hand hygiene'
+        ];
+
+        if (symptomsLower.includes('blood') || symptomsLower.includes('severe')) {
+            diagnosis.referral_needed = true;
+            diagnosis.red_flags = ['Blood in stool', 'Severe dehydration risk'];
+            diagnosis.treatment_protocol.medications.push(
+                { name: 'Antibiotic (Ciprofloxacin)', dosage: '500mg', frequency: 'Twice daily', duration: '3-5 days' }
+            );
+        }
+    }
+
+    // Headache
+    if (hasHeadacheSymptoms(symptomsLower)) {
+        if (symptomsLower.includes('severe') || symptomsLower.includes('worst') || symptomsLower.includes('sudden') || symptomsLower.includes('vision') || symptomsLower.includes('confusion')) {
+            diagnosis.primary_diagnosis = 'Severe Headache - Requires Evaluation';
+            diagnosis.confidence_score = 0.6;
+            diagnosis.referral_needed = true;
+            diagnosis.red_flags = ['Severe headache', 'Neurological symptoms possible'];
+        } else {
+            diagnosis.primary_diagnosis = 'Tension Headache';
+            diagnosis.confidence_score = 0.65;
+            diagnosis.treatment_protocol.medications = [
+                { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 6 hours as needed', duration: '2-3 days' }
+            ];
+            diagnosis.treatment_protocol.lifestyle_advice.push(
+                'Rest in a quiet, dark room',
+                'Apply cold compress to forehead',
+                'Avoid screen time',
+                'Ensure adequate sleep'
+            );
+        }
+    }
+
+    // Diabetes symptoms
+    if (symptomsLower.includes('excessive thirst') || symptomsLower.includes('frequent urination') ||
+        (symptomsLower.includes('weight loss') && symptomsLower.includes('fatigue'))) {
+        diagnosis.primary_diagnosis = 'Possible Diabetes - Screening Required';
+        diagnosis.confidence_score = 0.6;
+        diagnosis.referral_needed = true;
+        diagnosis.referral_specialty = 'Endocrinology/General Medicine';
+        diagnosis.immediate_actions = [
+            'Fasting blood sugar test',
+            'HbA1c test',
+            'Monitor symptoms',
+            'Dietary modifications'
+        ];
+        diagnosis.differential_diagnoses.push({
+            condition: 'Type 2 Diabetes Mellitus',
+            probability: 0.6,
+            reasoning: 'Classic diabetes symptoms present'
+        });
+    }
+
+    // Hypertension
+    if (bp && bp.includes('/')) {
+        try {
+            const systolic = parseInt(bp.split('/')[0]);
+            if (systolic > 140) {
+                diagnosis.primary_diagnosis = 'Hypertension - Requires Management';
+                diagnosis.confidence_score = 0.8;
+                diagnosis.referral_needed = true;
+                diagnosis.red_flags = ['Elevated blood pressure'];
+                diagnosis.immediate_actions = [
+                    'Rest and recheck BP after 15 minutes',
+                    'Reduce salt intake',
+                    'Avoid stress',
+                    'Regular BP monitoring'
+                ];
+            }
+        } catch (e) {
+            console.warn('Could not parse blood pressure:', e);
+        }
+    }
+
+    // Body ache/pain
+    if ((symptomsLower.includes('body ache') || symptomsLower.includes('body pain') || symptomsLower.includes('muscle pain'))
+        && diagnosis.primary_diagnosis === 'General Malaise - Requires Examination') {
+        diagnosis.primary_diagnosis = 'Viral Myalgia (Body Ache)';
+        diagnosis.confidence_score = 0.6;
+        diagnosis.treatment_protocol.medications = [
+            { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 8 hours', duration: '3-5 days' }
+        ];
+    }
+
+    return formatOfflineResult(diagnosis, language);
+}
+
+// Helper functions for symptom detection
+function hasFeverSymptoms(symptoms) {
+    const feverKeywords = ['fever', 'बुखार', 'காய்ச்சல்', 'జ్వరం', 'জ্বর', 'high temperature'];
+    return feverKeywords.some(keyword => symptoms.includes(keyword));
+}
+
+function hasRespiratorySymptoms(symptoms) {
+    const respiratoryKeywords = ['cough', 'cold', 'खांसी', 'सर्दी', 'இருமல்', 'దగ్గు', 'কাশি', 'runny nose', 'sore throat'];
+    return respiratoryKeywords.some(keyword => symptoms.includes(keyword));
+}
+
+function hasGISymptoms(symptoms) {
+    const giKeywords = ['diarrhea', 'diarrhoea', 'loose stool', 'vomiting', 'दस्त', 'उल्टी', 'வயிற்றுப்போக்கு', 'విరేచనాలు', 'ডায়রিয়া', 'nausea'];
+    return giKeywords.some(keyword => symptoms.includes(keyword));
+}
+
+function hasHeadacheSymptoms(symptoms) {
+    const headacheKeywords = ['headache', 'head pain', 'सिरदर्द', 'தலைவலி', 'తలనొప్పి', 'মাথাব্যথা'];
+    return headacheKeywords.some(keyword => symptoms.includes(keyword));
+}
+
+// Format offline result with language-specific patient explanation
+function formatOfflineResult(diagnosis, language) {
+    // Add language-specific patient explanation
+    const explanations = {
+        'hi': `${diagnosis.primary_diagnosis} का निदान किया गया है। कृपया आराम करें और दवाएं समय पर लें। यदि लक्षण बिगड़ते हैं तो तुरंत डॉक्टर से संपर्क करें।`,
+        'ta': `${diagnosis.primary_diagnosis} கண்டறியப்பட்டுள்ளது. தயவுசெய்து ஓய்வெடுத்து மருந்துகளை சரியாக எடுத்துக்கொள்ளுங்கள். அறிகுறிகள் மோசமானால் உடனடியாக மருத்துவரை அணுகவும்.`,
+        'te': `${diagnosis.primary_diagnosis} నిర్ధారించబడింది. దయచేసి విశ్రాంతి తీసుకోండి మరియు మందులను సమయానికి తీసుకోండి. లక్షణాలు తీవ్రమైతే వెంటనే వైద్యుడిని సంప్రదించండి.`,
+        'bn': `${diagnosis.primary_diagnosis} নির্ণয় করা হয়েছে। অনুগ্রহ করে বিশ্রাম নিন এবং সময়মতো ওষুধ খান। লক্ষণ খারাপ হলে অবিলম্বে ডাক্তারের সাথে যোগাযোগ করুন।`,
+        'en': `Based on your symptoms, you have been diagnosed with ${diagnosis.primary_diagnosis}. Please rest, take medications as prescribed, and monitor your symptoms. Seek immediate medical attention if symptoms worsen.`
+    };
+
+    diagnosis.patient_explanation = explanations[language] || explanations['en'];
+
+    return {
+        status: 'success',
+        diagnosis: diagnosis,
+        drug_interactions: [],
+        dosage_recommendations: [],
+        translations: translations[language] || translations['en'],
+        note: 'Offline mode - Rule-based diagnosis (AI unavailable)'
+    };
+}
+
+// Display offline notice
+function displayOfflineNotice() {
+    const notice = document.createElement('div');
+    notice.className = 'alert-box alert-warning';
+    notice.style.marginBottom = '1rem';
+    notice.innerHTML = `
+        <span style="font-size: 1.2rem;">📡</span>
+        <div>
+            <strong>Offline Mode Active</strong>
+            <p>The server is currently unavailable. This diagnosis was generated using rule-based logic. For more accurate AI-powered diagnosis, please ensure the backend server is running.</p>
+        </div>
+    `;
+    resultsContent.insertBefore(notice, resultsContent.firstChild);
+}
+
