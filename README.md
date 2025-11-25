@@ -332,4 +332,4 @@ For issues or questions:
 
 **Built with ❤️ for rural healthcare in India**
 
-*Empowering healthcare workers with AI to provide better care in underserved communities*
+*Empowering healthcare workers with GenAI to provide better care in underserved communities*
