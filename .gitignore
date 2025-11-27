@@ -6,8 +6,6 @@ venv/
 .env
 .venv
 env/
-*.db
-*.sqlite3
 
 # Node/Frontend
 node_modules/

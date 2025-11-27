@@ -46,6 +46,9 @@ DB_PATH = os.path.join(BASE_DIR, 'data', 'medical_assistant.db')
 
 def init_db():
     """Initialize SQLite database with required tables"""
+    # Ensure data directory exists
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    
     conn = sqlite3.connect(DB_PATH, timeout=10)
     try:
         cursor = conn.cursor()
