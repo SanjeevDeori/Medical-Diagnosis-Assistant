@@ -2,6 +2,10 @@
 
 An AI-powered medical diagnosis assistant specifically designed for rural healthcare centers and primary health clinics in India. The system helps healthcare workers diagnose common diseases by analyzing patient symptoms, medical history, and vital signs.
 
+## 🌐 Live Demo
+**[Launch Medical Diagnosis Assistant](https://medical-diagnosis-assistant-1.onrender.com)**
+*Note: The first load might take a minute as the free tier server spins up.*
+
 ## 🌟 Features
 
 ### Core Capabilities

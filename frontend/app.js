@@ -1,7 +1,7 @@
 // API Configuration
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '5000'
-    ? 'https://medical-diagnosis-assistant-1.onrender.com/api'
-    : '/api';
+const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+    ? 'http://localhost:5000/api'
+    : 'https://medical-diagnosis-assistant-1.onrender.com/api';
 
 // Translations
 const translations = {
