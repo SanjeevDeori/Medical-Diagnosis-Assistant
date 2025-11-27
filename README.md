@@ -14,6 +14,7 @@ An AI-powered medical diagnosis assistant specifically designed for rural health
 - **Referral System**: Identifies cases requiring specialist consultation
 - **Offline Mode**: Rule-based diagnosis when internet is unavailable
 - **Patient History**: Maintains diagnosis records for continuous care
+- **PDF Export**: Allows downloading the diagnosis report as a PDF for patient records and offline documentation.
 
 ### Technical Features
 - **Low Connectivity Support**: Optimized for rural internet conditions
@@ -276,24 +277,11 @@ When internet connectivity is unavailable:
 
 ## 📊 Performance Metrics
 
-- **Diagnosis Time**: <30 seconds (with internet)
-- **Offline Diagnosis**: <5 seconds
-- **Database Query**: <100ms
-- **UI Load Time**: <2 seconds
-- **Supported Concurrent Users**: 50+
+- Diagnosis Time: Typically under 30 seconds (with internet)
+- Offline Diagnosis: Typically under 10 seconds
+- Database Query: Typically under 100ms
+- UI Load Time: Typically under 10 seconds
 
-## 🔄 Future Enhancements
-
-- [ ] Integration with India's ABHA (Ayushman Bharat Health Account)
-- [ ] Voice input for symptoms (speech-to-text)
-- [ ] Image analysis for skin conditions
-- [ ] Telemedicine integration
-- [ ] Mobile app (Android/iOS)
-- [ ] Advanced analytics dashboard
-- [ ] Multi-facility sync
-- [ ] Prescription printing
-- [ ] Lab test recommendations
-- [ ] Vaccination tracking
 
 ## 📝 License
 
