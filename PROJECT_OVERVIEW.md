@@ -11,7 +11,7 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 | Requirement | Status | Implementation |
 |------------|--------|----------------|
 | AI-Powered Diagnosis | ✅ | Google Gemini Pro integration |
-| Multilingual Support | ✅ | Hindi, Tamil, Telugu, Bengali, English |
+| Partial Multilingual Support | ✅ | Hindi, Tamil, Telugu, Bengali, English |
 | Differential Diagnoses | ✅ | Multiple diagnoses with confidence scores |
 | Treatment Protocols | ✅ | Medication, dosage, lifestyle advice |
 | Specialist Referral | ✅ | Automatic detection and recommendations |
@@ -24,7 +24,7 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 ### 🛠️ Technology Stack
 
 **Backend:**
-- ✅ Flask (RESTful API)
+- ✅ Flask 
 - ✅ Google Gemini Pro (AI Model)
 - ✅ SQLite (Local database)
 - ✅ Python 3.8+
@@ -46,30 +46,30 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 
 ```
 ┌─────────────────────────────────────────────────────────┐
-│                    Frontend (Browser)                    │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  │
-│  │ Patient Info │  │   Symptoms   │  │   Results    │  │
-│  │    Panel     │  │    Panel     │  │    Panel     │  │
-│  └──────────────┘  └──────────────┘  └──────────────┘  │
-│         │                  │                  │          │
-│         └──────────────────┴──────────────────┘          │
-│                          │                               │
-│                    REST API Calls                        │
+│                    Frontend (Browser)                   │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │ Patient Info │  │   Symptoms   │  │   Results    │   │
+│  │    Panel     │  │    Panel     │  │    Panel     │   │
+│  └──────────────┘  └──────────────┘  └──────────────┘   │
+│         │                  │                  │         │
+│         └──────────────────┴──────────────────┘         │
+│                          │                              │
+│                    API Calls                            │
 └─────────────────────────────────────────────────────────┘
                            │
                            ▼
 ┌─────────────────────────────────────────────────────────┐
-│              Backend (Flask Server)                      │
-│  ┌──────────────────────────────────────────────────┐  │
-│  │              API Endpoints                        │  │
-│  │  /health  /diagnose  /patient/*  /drug-*         │  │
-│  └──────────────────────────────────────────────────┘  │
+│              Backend (Flask Server)                     │
+│  ┌──────────────────────────────────────────────────┐   │
+│  │              API Endpoints                       │   │
+│  │  /health  /diagnose  /patient/*  /drug-*         │   │
+│  └──────────────────────────────────────────────────┘   │
 │           │              │              │               │
 │           ▼              ▼              ▼               │
-│  ┌──────────────┐ ┌──────────┐ ┌──────────────┐       │
-│  │   Gemini AI  │ │  SQLite  │ │ Offline      │       │
-│  │   Engine     │ │ Database │ │ Diagnosis    │       │
-│  └──────────────┘ └──────────┘ └──────────────┘       │
+│  ┌──────────────┐ ┌──────────┐ ┌──────────────┐         │
+│  │   Gemini AI  │ │  SQLite  │ │ Offline      │         │
+│  │   Engine     │ │ Database │ │ Diagnosis    │         │
+│  └──────────────┘ └──────────┘ └──────────────┘         │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -103,7 +103,7 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 
 ### 1. Patient Registration
 ```
-User Input → Validate → Save to DB → Return Success
+User Input (Auto/Manual ID) → Validate → Save to DB → Return Success
 ```
 
 ### 2. Diagnosis Process
@@ -223,22 +223,6 @@ Translate Output → Display
 - No internet required
 - Manual data backup
 
-## 📱 Future Roadmap
-
-### Phase 2 (Planned)
-- [ ] Mobile app (Android/iOS)
-- [ ] Voice input for symptoms
-- [ ] Image analysis for skin conditions
-- [ ] Prescription printing
-- [ ] Lab test recommendations
-
-### Phase 3 (Advanced)
-- [ ] ABHA integration
-- [ ] Telemedicine support
-- [ ] Advanced analytics dashboard
-- [ ] Multi-facility sync
-- [ ] Vaccination tracking
-
 ## 🧪 Testing
 
 ### Test Coverage
@@ -298,28 +282,6 @@ Run `python backend/test_system.py` for automated testing.
 4. **Adoption**: Healthcare worker satisfaction
 5. **Impact**: Improved patient outcomes
 
-### Monitoring Dashboard (Future)
-- Daily diagnosis count
-- Average confidence scores
-- Referral rates
-- Common conditions
-- System performance
-
-## 🎓 Training Materials
-
-### For Healthcare Workers
-1. System overview video
-2. Step-by-step tutorials
-3. Common scenarios guide
-4. Troubleshooting FAQ
-5. Best practices document
-
-### For Administrators
-1. Installation guide
-2. Configuration manual
-3. Backup procedures
-4. Security guidelines
-5. Maintenance schedule
 
 ---
 
@@ -337,4 +299,4 @@ Run `python backend/test_system.py` for automated testing.
 
 **Built with ❤️ for rural healthcare in India**
 
-*Empowering healthcare workers with AI to save lives in underserved communities*
+*Empowering healthcare workers with GenAI to save lives in underserved communities*
