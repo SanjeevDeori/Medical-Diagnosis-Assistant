@@ -190,4 +190,9 @@ if __name__ == '__main__':
         os.makedirs('data')
         
     print("Starting MedAssist AI Backend (BioBERT Local)...")
-    app.run(debug=True, port=5000)
+    
+    # Get port from environment variable (for deployment platforms like Render)
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Bind to 0.0.0.0 to accept external connections
+    app.run(host='0.0.0.0', port=port, debug=False)
