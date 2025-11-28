@@ -1,0 +1,106 @@
+symptoms,disease
+high fever with severe chills and sweating,Malaria
+shivering and high temperature with headache,Malaria
+fever vomiting and sweating profusely,Malaria
+cyclical fever with cold stage and hot stage,Malaria
+severe joint pain and high fever with rash,Dengue
+pain behind eyes and skin rash with fever,Dengue
+bleeding from nose and gums with high fever,Dengue
+severe muscle pain and headache with fever,Dengue
+sustained high fever with abdominal pain,Typhoid
+headache and weakness with stomach pain and fever,Typhoid
+constipation or diarrhea with rose spots on chest,Typhoid
+loss of appetite and high fever over days,Typhoid
+persistent cough for weeks with blood,Tuberculosis
+weight loss and night sweats with cough,Tuberculosis
+chest pain and fatigue with chronic cough,Tuberculosis
+fever and night sweats with bloody sputum,Tuberculosis
+difficulty breathing and chest pain with cough,Pneumonia
+high fever with shaking chills and phlegm,Pneumonia
+shortness of breath and sharp chest pain,Pneumonia
+cough with greenish yellow mucus and fever,Pneumonia
+runny nose and sore throat with sneezing,Common Cold
+mild fever with body ache and congestion,Common Cold
+watery eyes and blocked nose with cough,Common Cold
+sore throat and low grade fever,Common Cold
+severe diarrhea and vomiting with dehydration,Acute Gastroenteritis
+stomach cramps and nausea with watery stool,Acute Gastroenteritis
+abdominal pain and vomiting after eating,Acute Gastroenteritis
+loose motions and weakness with nausea,Acute Gastroenteritis
+excessive thirst and frequent urination,Diabetes Type 2
+increased hunger and weight loss with fatigue,Diabetes Type 2
+blurred vision and slow healing sores,Diabetes Type 2
+feeling very thirsty and tired all the time,Diabetes Type 2
+severe headache and dizziness with high bp,Hypertension
+pounding in chest and ears with anxiety,Hypertension
+shortness of breath and nosebleeds with headache,Hypertension
+vision problems and chest pain with high pressure,Hypertension
+weakness and pale skin with fatigue,Anemia
+dizziness and cold hands and feet,Anemia
+shortness of breath and irregular heartbeat,Anemia
+brittle nails and craving for ice,Anemia
+yellow skin and eyes with dark urine,Jaundice
+abdominal pain and vomiting with yellow eyes,Jaundice
+pale stools and itchy skin with fatigue,Jaundice
+loss of appetite and yellowing of skin,Jaundice
+burning sensation in chest and throat,Acid Reflux
+regurgitation of food and sour taste,Acid Reflux
+difficulty swallowing and chest pain after eating,Acid Reflux
+heartburn and bloating with nausea,Acid Reflux
+sudden pain in lower right abdomen,Appendicitis
+nausea and vomiting with abdominal pain,Appendicitis
+loss of appetite and fever with belly pain,Appendicitis
+pain worsening when moving or coughing,Appendicitis
+high fever with body ache and weakness,Viral Fever
+headache and muscle pain with fever,Viral Fever
+chills and fatigue with running nose,Viral Fever
+general malaise and fever spikes,Viral Fever
+itchy red rash on skin,Fungal Infection
+ring shaped rash with scaly border,Fungal Infection
+cracked skin and itching between toes,Fungal Infection
+redness and irritation in skin folds,Fungal Infection
+fever with rigors and sweating at night,Malaria
+mosquito bite followed by fever and chills,Malaria
+severe headache and retro-orbital pain,Dengue
+platelet count drop with fever and rash,Dengue
+step ladder fever pattern with stomach pain,Typhoid
+enteric fever symptoms with weakness,Typhoid
+coughing up blood and evening rise of temperature,Tuberculosis
+chronic cough with weight loss and anorexia,Tuberculosis
+productive cough with rusty sputum and fever,Pneumonia
+rapid breathing and confusion in elderly,Pneumonia
+nasal congestion and scratchy throat,Common Cold
+sneezing and mild body ache with fatigue,Common Cold
+food poisoning symptoms with diarrhea,Acute Gastroenteritis
+stomach flu with vomiting and cramps,Acute Gastroenteritis
+polyuria polydipsia and polyphagia,Diabetes Type 2
+numbness in hands and feet with high sugar,Diabetes Type 2
+high blood pressure with headache and nausea,Hypertension
+hypertensive crisis symptoms with dizziness,Hypertension
+low hemoglobin with tiredness and pallor,Anemia
+iron deficiency symptoms with weakness,Anemia
+hepatitis symptoms with yellow sclera,Jaundice
+liver dysfunction signs with dark urine,Jaundice
+gerd symptoms with burning chest pain,Acid Reflux
+acid indigestion and bloating after meals,Acid Reflux
+appendix inflammation pain in right side,Appendicitis
+rebound tenderness in lower abdomen,Appendicitis
+seasonal viral infection with fever,Viral Fever
+viral flu symptoms with body pain,Viral Fever
+athletes foot symptoms with itching,Fungal Infection
+jock itch symptoms with redness,Fungal Infection
+fever with headache and vomiting,Malaria
+severe joint and muscle pain,Dengue
+prolonged fever with headache,Typhoid
+cough with weight loss,Tuberculosis
+chest pain with breathing difficulty,Pneumonia
+runny nose and cough,Common Cold
+vomiting and loose motions,Acute Gastroenteritis
+frequent urination and thirst,Diabetes Type 2
+high bp and headache,Hypertension
+pale skin and weakness,Anemia
+yellow eyes and skin,Jaundice
+heartburn and chest burning,Acid Reflux
+right side stomach pain,Appendicitis
+fever and body ache,Viral Fever
+skin itching and rash,Fungal Infection
