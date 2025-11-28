@@ -1,18 +1,9 @@
-# Python
+
 __pycache__/
-*.py[cod]
-*$py.class
+*.pyc
 venv/
 .env
-.venv
-env/
-
-# Node/Frontend
-node_modules/
 .DS_Store
-dist/
-build/
-
-# IDEs
-.vscode/
-.idea/
+backend/model/
+backend/data/expanded_training_data.csv
+*.db
