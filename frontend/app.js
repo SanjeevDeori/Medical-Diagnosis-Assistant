@@ -1,7 +1,5 @@
 // API Configuration
-const API_BASE_URL = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-    ? 'http://localhost:5000/api'
-    : 'https://medical-diagnosis-assistant-1.onrender.com/api';
+const API_BASE_URL = 'http://localhost:5000/api';
 
 // Translations
 const translations = {
@@ -88,7 +86,7 @@ let currentPatientId = null;
 let selectedSymptomsList = [];
 
 // Common Symptoms List
-const commonSymptomsList = [
+const COMMON_SYMPTOMS = [
     'Fever', 'Headache', 'Body ache', 'Fatigue', 'Nausea', 'Vomiting',
     'Diarrhea', 'Chest pain', 'Shortness of breath', 'Sore throat',
     'Runny nose', 'Cough', 'Chills', 'Dizziness'
@@ -256,7 +254,7 @@ async function handleDiagnosis(e) {
 // Register patient
 async function registerPatient(patientData) {
     try {
-        const response = await fetch(`${API_BASE_URL}/patient/register`, {
+        const response = await fetch(`${API_BASE_URL}/patients`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -292,9 +290,9 @@ function displayResults(result) {
             <div class="confidence-section">
                 <div class="confidence-label">${t.confidence}</div>
                 <div class="confidence-bar-bg">
-                    <div class="confidence-fill" style="width: ${(diagnosis.confidence_score * 100).toFixed(0)}%"></div>
+                    <div class="confidence-fill" style="width: ${diagnosis.confidence_score.toFixed(0)}%"></div>
                 </div>
-                <div style="font-weight: 700; color: var(--primary-dark);">${(diagnosis.confidence_score * 100).toFixed(0)}%</div>
+                <div style="font-weight: 700; color: var(--primary-dark);">${diagnosis.confidence_score.toFixed(0)}%</div>
             </div>
 
             ${diagnosis.referral_needed ? `
@@ -464,7 +462,7 @@ function displayError(message) {
 // Load patient history
 async function loadPatientHistory(patientId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/patient/history/${patientId}`);
+        const response = await fetch(`${API_BASE_URL}/history/${patientId}`);
         const result = await response.json();
 
         if (result.status === 'success' && result.history.length > 0) {
@@ -488,7 +486,7 @@ function displayHistory(history) {
                     <div class="history-date">${new Date(record.date).toLocaleString()}</div>
                     <div><strong>Symptoms:</strong> ${record.symptoms}</div>
                     <div><strong>Diagnosis:</strong> ${diagnosis.primary_diagnosis}</div>
-                    <div><strong>Confidence:</strong> ${(record.confidence_score * 100).toFixed(0)}%</div>
+                    <div><strong>Confidence:</strong> ${record.confidence_score.toFixed(0)}%</div>
                     ${record.referral_needed ? '<div style="color: var(--danger-color);">⚠️ Referral Needed</div>' : ''}
                 </div>
             `;
@@ -524,7 +522,7 @@ function formatDate(dateString) {
 // Symptom Checker Logic
 function renderCommonSymptoms() {
     const container = document.getElementById('commonSymptoms');
-    container.innerHTML = commonSymptomsList.map(symptom => `
+    container.innerHTML = COMMON_SYMPTOMS.map(symptom => `
         <div class="symptom-chip ${selectedSymptomsList.includes(symptom) ? 'active' : ''}" 
              onclick="toggleSymptom('${symptom}')">
             ${symptom}
@@ -577,7 +575,7 @@ function performOfflineDiagnosis(diagnosisData) {
     // Initialize diagnosis structure
     let diagnosis = {
         primary_diagnosis: 'General Malaise - Requires Examination',
-        confidence_score: 0.3,
+        confidence_score: 45,
         differential_diagnoses: [],
         immediate_actions: ['Monitor vital signs', 'Ensure patient comfort', 'Maintain hydration'],
         treatment_protocol: {
@@ -600,7 +598,7 @@ function performOfflineDiagnosis(diagnosisData) {
     // Check for emergency conditions first
     if (temp > 104 || (o2 && o2 < 90) || hr > 120) {
         diagnosis.primary_diagnosis = 'Medical Emergency';
-        diagnosis.confidence_score = 0.9;
+        diagnosis.confidence_score = 95;
         diagnosis.referral_needed = true;
         diagnosis.referral_specialty = 'Emergency Medicine';
         diagnosis.red_flags = ['Critical vital signs', 'Immediate medical attention required'];
@@ -613,7 +611,7 @@ function performOfflineDiagnosis(diagnosisData) {
     if (hasFeverSymptoms(symptomsLower)) {
         if (temp > 103) {
             diagnosis.primary_diagnosis = 'High Fever - Possible Severe Infection';
-            diagnosis.confidence_score = 0.75;
+            diagnosis.confidence_score = 78;
             diagnosis.referral_needed = true;
             diagnosis.referral_specialty = 'General Medicine';
             diagnosis.red_flags = ['High temperature (>103°F)', 'Risk of complications'];
@@ -632,7 +630,7 @@ function performOfflineDiagnosis(diagnosisData) {
             if (symptomsLower.includes('joint pain') || symptomsLower.includes('rash') || symptomsLower.includes('bleeding')) {
                 diagnosis.differential_diagnoses.push({
                     condition: 'Dengue Fever',
-                    probability: 0.6,
+                    probability: 0.65,
                     reasoning: 'High fever with joint pain/rash suggests dengue'
                 });
                 diagnosis.immediate_actions.push('Blood test for dengue/malaria recommended');
@@ -648,13 +646,13 @@ function performOfflineDiagnosis(diagnosisData) {
             }
         } else if (temp >= 100) {
             diagnosis.primary_diagnosis = 'Fever - Likely Viral Infection';
-            diagnosis.confidence_score = 0.7;
+            diagnosis.confidence_score = 72;
             diagnosis.treatment_protocol.medications = [
                 { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 6-8 hours', duration: '3-5 days' }
             ];
             diagnosis.differential_diagnoses.push({
                 condition: 'Viral Fever',
-                probability: 0.7,
+                probability: 0.75,
                 reasoning: 'Moderate fever without severe symptoms'
             });
         }
@@ -664,7 +662,7 @@ function performOfflineDiagnosis(diagnosisData) {
     if (hasRespiratorySymptoms(symptomsLower)) {
         if (symptomsLower.includes('difficulty breathing') || symptomsLower.includes('chest pain') || symptomsLower.includes('shortness of breath')) {
             diagnosis.primary_diagnosis = 'Lower Respiratory Tract Infection - Possible Pneumonia';
-            diagnosis.confidence_score = 0.7;
+            diagnosis.confidence_score = 75;
             diagnosis.referral_needed = true;
             diagnosis.referral_specialty = 'Pulmonology/General Medicine';
             diagnosis.red_flags = ['Breathing difficulty', 'Possible pneumonia'];
@@ -674,7 +672,7 @@ function performOfflineDiagnosis(diagnosisData) {
             ];
         } else {
             diagnosis.primary_diagnosis = 'Upper Respiratory Tract Infection (Common Cold)';
-            diagnosis.confidence_score = 0.75;
+            diagnosis.confidence_score = 80;
             diagnosis.treatment_protocol.medications = [
                 { name: 'Cetirizine', dosage: '10mg', frequency: 'Once daily', duration: '3-5 days' },
                 { name: 'Steam inhalation', dosage: '2-3 times', frequency: 'Daily', duration: '5 days' }
@@ -690,7 +688,7 @@ function performOfflineDiagnosis(diagnosisData) {
     // Gastrointestinal symptoms
     if (hasGISymptoms(symptomsLower)) {
         diagnosis.primary_diagnosis = 'Acute Gastroenteritis';
-        diagnosis.confidence_score = 0.75;
+        diagnosis.confidence_score = 78;
         diagnosis.immediate_actions = [
             'Start ORS immediately',
             'Monitor for dehydration signs',
@@ -721,12 +719,12 @@ function performOfflineDiagnosis(diagnosisData) {
     if (hasHeadacheSymptoms(symptomsLower)) {
         if (symptomsLower.includes('severe') || symptomsLower.includes('worst') || symptomsLower.includes('sudden') || symptomsLower.includes('vision') || symptomsLower.includes('confusion')) {
             diagnosis.primary_diagnosis = 'Severe Headache - Requires Evaluation';
-            diagnosis.confidence_score = 0.6;
+            diagnosis.confidence_score = 65;
             diagnosis.referral_needed = true;
             diagnosis.red_flags = ['Severe headache', 'Neurological symptoms possible'];
         } else {
             diagnosis.primary_diagnosis = 'Tension Headache';
-            diagnosis.confidence_score = 0.65;
+            diagnosis.confidence_score = 70;
             diagnosis.treatment_protocol.medications = [
                 { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 6 hours as needed', duration: '2-3 days' }
             ];
@@ -743,7 +741,7 @@ function performOfflineDiagnosis(diagnosisData) {
     if (symptomsLower.includes('excessive thirst') || symptomsLower.includes('frequent urination') ||
         (symptomsLower.includes('weight loss') && symptomsLower.includes('fatigue'))) {
         diagnosis.primary_diagnosis = 'Possible Diabetes - Screening Required';
-        diagnosis.confidence_score = 0.6;
+        diagnosis.confidence_score = 68;
         diagnosis.referral_needed = true;
         diagnosis.referral_specialty = 'Endocrinology/General Medicine';
         diagnosis.immediate_actions = [
@@ -765,7 +763,7 @@ function performOfflineDiagnosis(diagnosisData) {
             const systolic = parseInt(bp.split('/')[0]);
             if (systolic > 140) {
                 diagnosis.primary_diagnosis = 'Hypertension - Requires Management';
-                diagnosis.confidence_score = 0.8;
+                diagnosis.confidence_score = 85;
                 diagnosis.referral_needed = true;
                 diagnosis.red_flags = ['Elevated blood pressure'];
                 diagnosis.immediate_actions = [
@@ -784,7 +782,7 @@ function performOfflineDiagnosis(diagnosisData) {
     if ((symptomsLower.includes('body ache') || symptomsLower.includes('body pain') || symptomsLower.includes('muscle pain'))
         && diagnosis.primary_diagnosis === 'General Malaise - Requires Examination') {
         diagnosis.primary_diagnosis = 'Viral Myalgia (Body Ache)';
-        diagnosis.confidence_score = 0.6;
+        diagnosis.confidence_score = 68;
         diagnosis.treatment_protocol.medications = [
             { name: 'Paracetamol', dosage: '500mg', frequency: 'Every 8 hours', duration: '3-5 days' }
         ];
