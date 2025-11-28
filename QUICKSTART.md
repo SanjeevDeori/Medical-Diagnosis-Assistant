@@ -11,16 +11,16 @@ cd medical-diagnosis-assistant
 .\setup.ps1
 ```
 
-### Step 2: Get Gemini API Key (Optional but Recommended)
-1. Visit: https://makersuite.google.com/app/apikey
-2. Sign in with Google account
-3. Click "Create API Key"
-4. Copy the key
-5. Open `backend/.env` in a text editor
-6. Replace `your_gemini_api_key_here` with your actual key
-7. Save the file
+### Step 2: Verify BioBERT Model
+The system uses a locally trained BioBERT model fine-tuned on medical diagnosis data. No API keys required!
 
-**Note**: Without API key, system works in offline mode with rule-based diagnosis.
+**Model Information**:
+- **Model**: BioBERT (Biomedical BERT)
+- **Training**: Fine-tuned on 15 disease categories
+- **Location**: `backend/models/biobert_finetuned/`
+- **Deployment**: Runs completely offline
+
+**Note**: The BioBERT model works locally without any external API dependencies.
 
 ### Step 3: Start Backend
 ```powershell
@@ -33,7 +33,7 @@ You should see:
 ```
 🏥 Medical Diagnosis Assistant Backend Starting...
 📊 Database: ../data/medical_assistant.db
-🤖 AI Model: Gemini Pro (Online)
+🤖 AI Model: BioBERT (Online)
 🌐 Server running on http://localhost:5000
 ```
 
@@ -133,10 +133,11 @@ venv\Scripts\activate
 python app.py
 ```
 
-### "AI Model Offline" message
-**Solution**: Add Gemini API key to `.env` file
-- System still works in offline mode
-- For AI-powered diagnosis, add API key
+### "AI Model Not Loading" message
+**Solution**: Ensure BioBERT model files are in place
+- Check that `backend/models/biobert_finetuned/` directory exists
+- Verify model files are present (pytorch_model.bin, config.json, etc.)
+- Model should load automatically on backend startup
 
 ### Database errors
 **Solution**: Ensure data directory exists
@@ -208,21 +209,21 @@ Expected: Diabetes screening recommendation
 
 ## 🌐 Offline Mode
 
-When internet is unavailable:
-1. System automatically detects
-2. Switches to rule-based diagnosis
-3. Provides basic treatment protocols
-4. Saves data for later sync
-5. Status shows "Offline Mode"
+The BioBERT model runs completely offline without requiring internet connectivity!
 
-**Offline Capabilities**:
+**Full Capabilities (Always Available)**:
+- ✅ Advanced BioBERT AI analysis
+- ✅ Complex differential diagnosis
 - ✅ Symptom analysis
-- ✅ Basic diagnosis
 - ✅ Treatment suggestions
 - ✅ Drug interaction checks
 - ✅ Patient history
-- ❌ Advanced AI analysis
-- ❌ Complex differential diagnosis
+- ✅ Multi-language support
+
+**System Requirements**:
+- No internet connection needed
+- All data stays local
+- Model runs on your machine
 
 ## 📞 Getting Help
 
