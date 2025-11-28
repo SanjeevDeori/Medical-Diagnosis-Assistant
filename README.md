@@ -2,6 +2,10 @@
 
 An AI-powered medical diagnosis assistant using **fine-tuned BioBERT** specifically designed for rural healthcare centers and primary health clinics in India. The system helps healthcare workers diagnose common diseases by analyzing patient symptoms, medical history, and vital signs.
 
+
+## 🔗 Live Demo
+
+**Try it here:** https://medical-diagnosis-assistant-1.onrender.com/
 ## 🎯 Key Highlights
 
 - ✅ **Fine-tuned BioBERT Model** (110M parameters, medical-grade AI)
