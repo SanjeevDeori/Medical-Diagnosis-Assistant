@@ -122,10 +122,10 @@ An AI-powered diagnostic assistant that brings **medical-grade diagnostic accura
 ### 🌐 Multilingual Support
 | Language | Status | Patient Coverage |
 |----------|--------|------------------|
-| 🇮🇳 Hindi | ✅ Full | 528M speakers |
-| 🇮🇳 Tamil | ✅ Full | 75M speakers |
-| 🇮🇳 Telugu | ✅ Full | 82M speakers |
-| 🇮🇳 Bengali | ✅ Full | 265M speakers |
+| 🇮🇳 Hindi | ✅ Partial | 528M speakers |
+| 🇮🇳 Tamil | ✅ Partial | 75M speakers |
+| 🇮🇳 Telugu | ✅ Partial | 82M speakers |
+| 🇮🇳 Bengali | ✅ Partial | 265M speakers |
 | 🇬🇧 English | ✅ Full | Medical standard |
 
 **Total Coverage:** 950M+ people across India
