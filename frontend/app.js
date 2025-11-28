@@ -1,5 +1,5 @@
 // API Configuration
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://medical-diagnosis-assistant-3.onrender.com/api';
 
 // Translations
 const translations = {
