@@ -2,7 +2,7 @@
 
 ## 🎯 Project Summary
 
-A comprehensive GenAI-powered medical diagnosis assistant specifically designed for rural healthcare centers and primary health clinics in India. The system leverages Google Gemini Pro AI to provide intelligent diagnosis support while maintaining offline capabilities for low-connectivity environments.
+A comprehensive GenAI-powered medical diagnosis assistant specifically designed for rural healthcare centers and primary health clinics in India. The system leverages BioBERT AI to provide intelligent diagnosis support while maintaining offline capabilities for low-connectivity environments.
 
 ## 📋 Requirements Compliance
 
@@ -10,7 +10,7 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 
 | Requirement | Status | Implementation |
 |------------|--------|----------------|
-| AI-Powered Diagnosis | ✅ | Google Gemini Pro integration |
+| AI-Powered Diagnosis | ✅ | BioBERT integration |
 | Partial Multilingual Support | ✅ | Hindi, Tamil, Telugu, Bengali, English |
 | Differential Diagnoses | ✅ | Multiple diagnoses with confidence scores |
 | Treatment Protocols | ✅ | Medication, dosage, lifestyle advice |
@@ -25,7 +25,7 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 
 **Backend:**
 - ✅ Flask 
-- ✅ Google Gemini Pro (AI Model)
+- ✅ BioBERT (AI Model)
 - ✅ SQLite (Local database)
 - ✅ Python 3.8+
 
@@ -67,8 +67,8 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 │           │              │              │               │
 │           ▼              ▼              ▼               │
 │  ┌──────────────┐ ┌──────────┐ ┌──────────────┐         │
-│  │   Gemini AI  │ │  SQLite  │ │ Offline      │         │
-│  │   Engine     │ │ Database │ │ Diagnosis    │         │
+│  │   BioBert    │ │  SQLite  │ │ Offline      │         │
+│  │   AI Model   │ │ Database │ │ Diagnosis    │         │
 │  └──────────────┘ └──────────┘ └──────────────┘         │
 └─────────────────────────────────────────────────────────┘
 ```
@@ -100,29 +100,6 @@ A comprehensive GenAI-powered medical diagnosis assistant specifically designed 
 - interaction_severity, description
 
 ## 🔄 Workflow
-
-### 1. Patient Registration
-```
-User Input (Auto/Manual ID) → Validate → Save to DB → Return Success
-```
-
-### 2. Diagnosis Process
-```
-Symptoms + Vitals → AI Analysis (Gemini) → Parse Results
-                         ↓
-                    Offline Mode?
-                         ↓
-              Rule-based Diagnosis
-                         ↓
-Drug Interaction Check → Dosage Calculation → Display Results
-                         ↓
-                   Save to History
-```
-
-### 3. Multilingual Support
-```
-User Selects Language → Update UI Labels → 
-Process Input (Any Language) → AI Response → 
 Translate Output → Display
 ```
 

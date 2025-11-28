@@ -49,8 +49,7 @@ if (Test-Path ".env") {
     Copy-Item ".env.example" ".env"
     Write-Host "✓ Created .env file from template" -ForegroundColor Green
     Write-Host ""
-    Write-Host "⚠️  IMPORTANT: Please edit .env and add your Gemini API key" -ForegroundColor Yellow
-    Write-Host "   Get your free API key from: https://makersuite.google.com/app/apikey" -ForegroundColor Cyan
+    Write-Host "✓ BioBERT model configured for offline diagnosis" -ForegroundColor Green
 }
 
 # Create data directory
@@ -71,7 +70,7 @@ Write-Host "Setup Complete! 🎉" -ForegroundColor Green
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
-Write-Host "1. Edit backend/.env and add your Gemini API key" -ForegroundColor White
+ Write-Host "1. Ensure BioBERT model is trained (run: python backend/train_biobert.py)" -ForegroundColor White
 Write-Host "2. Run: cd backend" -ForegroundColor White
 Write-Host "3. Run: python app.py" -ForegroundColor White
 Write-Host "4. Open frontend/index.html in your browser" -ForegroundColor White
