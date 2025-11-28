@@ -5,8 +5,6 @@ import sqlite3
 import json
 import os
 from datetime import datetime
-
-from inference import biobert 
 from typing import Dict, List, Any
 import re
 from flask import send_from_directory
@@ -15,6 +13,16 @@ from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
+
+# Try to import BioBERT, fall back to offline mode if not available
+try:
+    from inference import biobert
+    BIOBERT_AVAILABLE = True
+    print("✅ BioBERT model loaded successfully")
+except Exception as e:
+    BIOBERT_AVAILABLE = False
+    print(f"⚠️ BioBERT not available, using offline mode only: {e}")
+    biobert = None
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
@@ -70,7 +78,8 @@ init_db()
 def health_check():
     return jsonify({
         'status': 'healthy',
-        'model_available': True, # BioBERT is always available locally
+        'model_available': BIOBERT_AVAILABLE,
+        'mode': 'BioBERT' if BIOBERT_AVAILABLE else 'Offline',
         'database': 'connected'
     })
 
@@ -124,12 +133,21 @@ def diagnose():
         return jsonify({'status': 'error', 'message': 'No symptoms provided'}), 400
 
     try:
-        # 1. Run BioBERT Inference
-        print(f"Running BioBERT diagnosis for: {symptoms}")
-        prediction = biobert.predict(symptoms)
-        
-        primary_diagnosis = prediction['disease']
-        confidence = prediction['confidence']
+        # 1. Run BioBERT Inference (if available)
+        if BIOBERT_AVAILABLE and biobert:
+            print(f"Running BioBERT diagnosis for: {symptoms}")
+            prediction = biobert.predict(symptoms)
+            
+            primary_diagnosis = prediction['disease']
+            confidence = prediction['confidence']
+        else:
+            # Fallback to simple offline diagnosis
+            print(f"Running offline diagnosis for: {symptoms}")
+            return jsonify({
+                'status': 'info',
+                'message': 'BioBERT model not available, use frontend offline mode for diagnosis',
+                'mode': 'offline_only'
+            })
 
         # 2. Generate structured response (simulating full medical report)
         # In a real system, another model might generate the text. 
